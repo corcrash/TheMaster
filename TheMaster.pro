@@ -28,3 +28,5 @@ HEADERS += \
 
 OTHER_FILES += \
     qml/TheMaster/NewConnectionDialog.qml
+
+RESOURCES +=

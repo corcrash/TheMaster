@@ -1,5 +1,6 @@
 #include "client.h"
 #include <QQmlContext>
+#include <QFile>
 
 Client::Client(QObject *parent, QQmlApplicationEngine *engine) :
     QObject(parent)
@@ -34,4 +35,28 @@ void Client::connectToAddress(const QString &address, const QString &port)
         this->connection->close();
 
     this->connection->connectToHost(address, port.toInt());
+}
+
+void Client::emitSignal(const QString &signal_descriptor, const QString &data)
+{
+    qDebug() << "Emiting signal: " << signal_descriptor;
+    this->connection->sendEventMessage(signal_descriptor, data);
+}
+
+void Client::writeConnections(const QString &data)
+{
+    QFile file("connections.json");
+    file.open(QIODevice::WriteOnly);
+    file.write(data.toUtf8());
+    file.close();
+}
+
+QString Client::readConnections()
+{
+    QFile file("connections.json");
+    file.open(QIODevice::ReadOnly);
+    QByteArray data = file.readAll();
+    file.close();
+
+    return QString::fromUtf8(data);
 }

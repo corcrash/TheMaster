@@ -2,7 +2,6 @@ import QtQuick 2.0
 import QtQuick.Controls 1.1
 import QtQuick.Window 2.0
 import QtQuick.Layouts 1.1
-//import Clients 1.0
 
 Window {
     id: connectionWindow
@@ -28,11 +27,13 @@ Window {
 
 
             width: 400; height: 60
+
             Column {
                 Text { text: '<b>Name:</b> ' + name }
                 Text { text: '<b>Address:</b> ' + address }
                 Text { text: '<b>Port:</b> ' + port }
             }
+
         }
     }
 
@@ -56,7 +57,7 @@ Window {
             //The list view for connection
             ListView {
                 id: connectionList
-                width: 400
+                width: 100
                 height: parent.height
 
                 model: connectionModel
@@ -71,6 +72,20 @@ Window {
                 delegate: connectionDelegate
                 highlight: Rectangle { color: "lightsteelblue"; radius: 2 }
                 focus: false
+
+                Component.onCompleted: {
+                    var dataRead = client.readConnections();
+
+                    if(dataRead == '')
+                        return;
+
+                    var dataArray = dataRead.split(",");
+
+                    console.log(dataArray.length)
+                    for(var i=0; i<dataArray.length; i+=3){
+                        connectionModel.append({ 'name': dataArray[i], 'address': dataArray[i+1], 'port': dataArray[i+2] });
+                    }
+                }
 
 
             }
@@ -135,15 +150,44 @@ Window {
                     }
                 }
 
-                //Row layput that holds the buttons
+                //Row layout that holds the buttons
                 RowLayout {
                     Button {
                         text: "Add"
                         onClicked: {
                             connectionModel.append({'name': 'Gallifrey', 'address': '127.0.0.1', 'port': '3210'})
-                            connectionList.currentIndex = connectionList.bottom
+
+                            var dataToWrite = [];
+
+                            for(var i=0; i<connectionModel.count; i++){
+                                dataToWrite.push(connectionModel.get(i).name);
+                                dataToWrite.push(connectionModel.get(i).address);
+                                dataToWrite.push(connectionModel.get(i).port);
+                            }
+
+                            client.writeConnections(dataToWrite);
                         }
                     }
+
+                    Button {
+                        text: "Remove"
+                        onClicked: {
+                            connectionModel.remove(connectionList.currentIndex);
+
+                            var dataToWrite = [];
+
+                            for(var i=0; i<connectionModel.count; i++){
+                                dataToWrite.push(connectionModel.get(i).name);
+                                dataToWrite.push(connectionModel.get(i).address);
+                                dataToWrite.push(connectionModel.get(i).port);
+                            }
+
+                            client.writeConnections(dataToWrite);
+                        }
+                    }
+                }
+
+                RowLayout {
 
                     Button {
                         text: "Save"
@@ -151,6 +195,16 @@ Window {
                             connectionModel.setProperty(connectionList.currentIndex, 'name', textName.text);
                             connectionModel.setProperty(connectionList.currentIndex, 'address', textIP.text);
                             connectionModel.setProperty(connectionList.currentIndex, 'port', textPort.text);
+
+                            var dataToWrite = [];
+
+                            for(var i=0; i<connectionModel.count; i++){
+                                dataToWrite.push(connectionModel.get(i).name);
+                                dataToWrite.push(connectionModel.get(i).address);
+                                dataToWrite.push(connectionModel.get(i).port);
+                            }
+
+                            client.writeConnections(dataToWrite);
                         }
                     }
 
@@ -182,9 +236,9 @@ Window {
                 }
             }
         }
-
     }
 
 }
+
 
 

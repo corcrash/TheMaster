@@ -18,7 +18,7 @@ private:
 
 public:
     explicit Connection(QObject *parent = 0);
-    bool sendEventMessage(const QString &eventMessage);
+    bool sendEventMessage(const QString &eventMessage, const QVariant &data);
     bool sendQMLRequest();
 
 signals:

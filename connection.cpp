@@ -11,14 +11,14 @@ Connection::Connection(QObject *parent) :
     connect(this, SIGNAL(disconnected()), this, SLOT(deleteLater()));
 }
 
-bool Connection::sendEventMessage(const QString &eventMessage)
+bool Connection::sendEventMessage(const QString &eventMessage, const QVariant &data)
 {
     if(eventMessage.isEmpty())
         return false;
 
-    QByteArray data = eventMessage.toUtf8();
+    QByteArray buffer = QString("{ \"type\": \"eventMessage\", \"identifier\": \"" + eventMessage + "\", \"data\": \"" + data.toString() + "\" }").toUtf8();
 
-    if(this->write(data) == data.size())
+    if(this->write(buffer) == buffer.size())
         return true;
 
     return false;

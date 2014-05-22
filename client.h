@@ -21,6 +21,9 @@ public:
     void setUiData(const QString &data);
     QString uiData() const;
     Q_INVOKABLE void connectToAddress(const QString &address, const QString &port);
+    Q_INVOKABLE void emitSignal(const QString &signal_descriptor, const QString &data);
+    Q_INVOKABLE void writeConnections(const QString &data);
+    Q_INVOKABLE QString readConnections();
 
 signals:
     void uiDataChanged();
