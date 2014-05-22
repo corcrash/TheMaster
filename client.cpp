@@ -19,7 +19,6 @@ void Client::newQMLCodeRecieved(const QString &QMLCode)
 
 void Client::setUiData(const QString &data)
 {
-    qDebug() << "UI Data changed!";
     m_ui_data = data;
     emit uiDataChanged();
 }
@@ -39,7 +38,6 @@ void Client::connectToAddress(const QString &address, const QString &port)
 
 void Client::emitSignal(const QString &signal_descriptor, const QString &data)
 {
-    qDebug() << "Emiting signal: " << signal_descriptor;
     this->connection->sendEventMessage(signal_descriptor, data);
 }
 

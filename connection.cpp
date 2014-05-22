@@ -26,7 +26,7 @@ bool Connection::sendEventMessage(const QString &eventMessage, const QVariant &d
 
 bool Connection::sendQMLRequest()
 {
-    QString request = "{ \"type\" : \"QMLRequest\" }";
+    QString request = "{ \"type\" : \"eventMessage\", \"identifier\": \"QMLRequest\", \"data\": \"main\" }";
 
     if(this->write(request.toUtf8()) == request.toUtf8().size())
         return true;
